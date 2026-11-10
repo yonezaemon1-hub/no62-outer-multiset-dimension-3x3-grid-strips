@@ -1,0 +1,272 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=22mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref,enumitem}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,
+  pdftitle={Exact Outer Multiset Dimension of the Three-by-Three Path Grid Strips},
+  pdfauthor={Ryutaro Yonezu},
+  pdfsubject={Computer-assisted mathematical preprint v1.0, 10 November 2026}}
+\newcommand{\odim}{\operatorname{odim}}
+\newcommand{\sq}{\mathbin{\square}}
+\newcommand{\MS}{\mathcal M}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\title{\bfseries Exact Outer Multiset Dimension of the Three-by-Three Path Grid Strips}
+\author{Ryutaro Yonezu\\\small Independent Researcher}
+\date{10 November 2026 --- No. 62, Preprint v1.0}
+\linespread{0.98}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\begin{minipage}{0.93\linewidth}\centering\small
+\textbf{COMPUTER-ASSISTED MATHEMATICAL PREPRINT --- v1.0}\\[2pt]
+Independent AI differential audit through v0.3: author-reported PASS.\\
+Windows PowerShell 5.1 reproduction of v0.3: author-supplied PASS.\\
+Novelty: INCONCLUSIVE. Human peer review: NOT PERFORMED.\\
+Copyright \copyright\ 2026 Ryutaro Yonezu. All rights reserved.
+\end{minipage}}
+\end{center}
+\begin{abstract}
+We give a computer-assisted exact classification of the outer multiset dimension of
+$G_n=P_3\sq P_3\sq P_n$, for $n\ge2$. The value is $6$ for $n=3$,
+$5$ for $n\in\{2,4,5,6,7,8\}$, and $4$ for $n\ge9$.
+The lower bound $\odim(G_n)\ge4$ uses the separately published,
+computer-assisted universal three-dimensional lower bound in the author's No.~59
+preprint; it is not independently reproved here. The small exceptional cases
+are established by exhaustive finite certificates, while the infinite upper
+bound follows from four explicit landmarks, distance-sum identities, and two
+bounded integer collision checks. The result is neither formally verified nor
+human peer reviewed; novelty remains unconfirmed.
+\end{abstract}
+
+\section{Definition, scope, and relation to earlier work}
+For a connected graph $G$ and $S\subseteq V(G)$, write
+$\MS_S(v)=\{\!\{d_G(v,s):s\in S\}\!\}$ for the distance \emph{multiset},
+with multiplicities retained and order forgotten. The set $S$ is
+\emph{outer multiset resolving} if $\MS_S(u)\ne\MS_S(v)$ for all distinct
+$u,v\in V(G)\setminus S$. Its minimum cardinality is $\odim(G)$.
+The property is not generally monotone under adding landmarks; in particular,
+absence of a $k$-landmark solution alone does not establish absence of every
+smaller solution.
+
+The two-path value $\odim(P_s\sq P_t)=3$ for $s\ge t\ge2$ is due to
+Klav\v{z}ar--Kuziak--Yero~\cite{KKY2023}. Farhan--Klav\v{z}ar--Kuziak--Yero
+list extension to more than two path factors as Problem 10 in their
+2026 survey~\cite{FKKY2026}. This manuscript addresses only the subfamily
+$P_3\sq P_3\sq P_n$, not general three-path products.
+
+The author's No.~58~\cite{Yonezu58} examines $P_2\sq P_3\sq P_n$.
+Our $G_2\cong P_2\sq P_3\sq P_3$ is the \emph{same graph} as the $n=3$
+finite instance in the author's report on No.~58. The value $5$ is
+also recorded in the short-grid table of No.~59~\cite{Yonezu59}.
+The published theorem of No.~58 covers $n\ge6$. We include $G_2$ as
+an overlap for completeness. No.~59 supplies the universal lower bound
+\begin{equation}\label{eq:no59}
+  \odim(P_a\sq P_b\sq P_c)\ge4\qquad (a,b,c\ge2).
+\end{equation}
+No.~59 is an author preprint with computer-assisted verification, not an
+independently formalized theorem of the external literature. Our reliance
+on it is explicit.
+
+Identify $V(G_n)$ with $\{0,1,2\}^2\times\{0,\ldots,n-1\}$.
+The graph distance is $d((x,y,z),(u,v,w))=|x-u|+|y-v|+|z-w|$.
+
+\begin{theorem}\label{thm:main}
+For every integer $n\ge2$,
+\[
+ \odim(P_3\sq P_3\sq P_n)=
+ \begin{cases}
+ 6,&n=3,\\
+ 5,&n=2\text{ or }4\le n\le8,\\
+ 4,&n\ge9.
+ \end{cases}
+\]
+The proof depends on the lower-bound result \eqref{eq:no59}, finite
+exhaustive computation, and the exact finite certificates detailed below.
+\end{theorem}
+
+\section{Small parameters and finite certificates}
+For each $n=2,\ldots,8$, the frozen C++17 verifier exhaustively tests
+all $\binom{9n}{4}$ four-landmark sets and finds none outer multiset
+resolving. For $n=3$, it also tests all $\binom{27}{5}$ five-landmark
+sets, again finding none. This verifier represents a $k$-distance multiset
+by its first $k$ integer power sums. Newton's identities imply that
+these determine the multiset exactly; no probabilistic hash collision is
+accepted as equivalence because unordered-set equality compares the full
+power-sum array (the hash is only an index).
+
+\begin{center}\small
+\begin{tabular}{@{}rrrrrrrr@{}}\toprule
+$n$&2&3&4&5&6&7&8\\\midrule
+$\binom{9n}{4}$&3060&17550&58905&148995&316251&595665&1028790\\
+\bottomrule\end{tabular}
+\end{center}
+The additional $n=3$ five-set total is $\binom{27}{5}=80730$.
+Explicit upper witnesses are recorded verbatim in
+\texttt{frozen/verify\_finite.cpp}, for sizes $5$ at $n=2,4,\ldots,8$
+and size $6$ at $n=3$. Their distance multisets are checked directly.
+With \eqref{eq:no59} excluding every size at most three, these computations
+settle the minimum values for $n\le8$. The source and expected outputs are
+frozen and accompanied by SHA256 digests.
+
+\section{Four-landmark constructions for all \texorpdfstring{$n\ge9$}{n >= 9}}
+For odd $n\ge9$ let $c=3$; for even $n\ge12$ let $c=6$. Set
+\begin{equation}\label{eq:landmarks}
+S_n=\{(0,0,0),(0,0,1),(0,0,n-1),(0,2,c)\}.
+\end{equation}
+At $n=10$ use instead the exceptional witness
+\begin{equation}\label{eq:n10}
+ S_{10}=\{(0,0,0),(0,0,6),(0,2,8),(2,2,5)\}.
+\end{equation}
+For $9\le n\le31$, the frozen Python certificate directly compares
+all sorted four-distance signatures outside $S_n$ and finds them distinct.
+For $n\ge32$, the following lemmas reduce infinitely many possible
+collisions to small, explicit integer checks.
+
+Let $p=x+y$, $a=2x+y$, and write the distances to the four landmarks
+of \eqref{eq:landmarks} in the listed order as $A,B,C,D$. Then
+\begin{equation}\label{eq:distances}
+ (A,B,C,D)=(p+z,\ p+|z-1|,\ p+n-1-z,\ x+2-y+|z-c|).
+\end{equation}
+Their sum $T=A+B+C+D$ satisfies the exact identity
+\begin{equation}\label{eq:sum}
+ T=\begin{cases}
+ n+c+2+2a,&z=0,\\
+ n+c+2a,&1\le z<c,\\
+ n-c+2(z+a),&z\ge c.
+ \end{cases}
+\end{equation}
+Here $0\le a\le6$.
+
+\begin{lemma}[Near-prefix reduction]\label{lem:prefix}
+Suppose $n\ge32$ and two distinct vertices outside $S_n$ have equal
+four-distance multisets. If either vertex has $z<c$, both have
+$z\le c+7$.
+On this prefix, $C$ is strictly larger than each of $A,B,D$.
+Consequently any collision in this case is detected by equality of
+\[
+ \left(p-z,\;\operatorname{sort}\bigl(A,B,D\bigr)\right).
+\]
+The exact finite prefix check finds no such collision.
+\end{lemma}
+\begin{proof}
+By \eqref{eq:sum}, a vertex with $z<c$ has $T\le n+c+14$.
+For a vertex at $z'\ge c$, equality of the sums implies
+$n-c+2z'\le n+c+14$, whence $z'\le c+7$.
+If both vertices have $z<c$, the same bound holds trivially.
+On $0\le z\le c+7\le13$ and $n\ge32$ we have
+$C-A=n-1-2z>0$, and $C>B$ by inspection of $z=0$ or $z\ge1$.
+Moreover
+$C-D=n-3+2y-z-|z-c|>0$: for $z\le c$, it is at least
+$n-3-c$, and for $z\ge c$, at least $n-c-17$.
+Thus $C$ is the unique maximum. Equal multisets must have $C=C'$,
+so $p-z=p'-z'$; the other three distances must agree as multisets.
+The frozen exact checker enumerates every vertex in this prefix except
+$(0,0,0),(0,0,1),(0,2,c)$ (the fourth landmark $(0,0,n-1)$ is
+outside the prefix). It checks $96$ vertices for $c=3$, and $123$ for
+$c=6$, and finds all indicated signatures unique.
+\end{proof}
+
+\begin{lemma}[Tail collision certificate]\label{lem:tail}
+For $n\ge32$, no two distinct vertices with $z,z'\ge c$ have equal
+four-distance multisets with respect to \eqref{eq:landmarks}.
+\end{lemma}
+\begin{proof}
+Set $dx=x-x'$, $dy=y-y'$, and $t=p+z$.
+By the third case of \eqref{eq:sum}, equality of sums implies
+\begin{equation}\label{eq:dz}
+ z'-z=2dx+dy.
+\end{equation}
+Subtract the common integer $t$ from each element of the two multisets.
+With $h=n-1-2z$ this yields the necessary equality
+\begin{equation}\label{eq:tail}
+ \{\!\{0,-1,2-2y-c,h\}\!\}
+ =\{\!\{dx,dx-1,dx+2-2y'-c,h-3dx-2dy\}\!\}.
+\end{equation}
+Since $dx,dy\in[-2,2]$, the first three elements of the left
+multiset lie in $[-8,0]$ and those on the right in $[-10,2]$.
+Also $|3dx+2dy|\le10$.
+If $|h|>30$, the $h$-term is the unique extreme (largest if $h>30$,
+smallest if $h<-30$), on both sides, forcing
+$h=h-3dx-2dy$. The sole solution of $3dx+2dy=0$
+with $dx,dy\in[-2,2]$ is $dx=dy=0$; then \eqref{eq:dz}
+forces $z=z'$, contradicting distinctness.
+
+It remains to consider $|h|\le30$. Since $h\equiv n-1\pmod2$,
+there are 31 allowed even $h$ values when $n$ is odd ($c=3$), and
+30 allowed odd $h$ values when $n$ is even ($c=6$).
+For each $c$, exhaust the 72 ordered \emph{distinct} pairs
+$(x,y)\ne(x',y')$ in $\{0,1,2\}^2$, together with every such $h$.
+Sorting the four entries on both sides of \eqref{eq:tail}
+produces no equality among $72\cdot31=2232$ checks for $c=3$,
+respectively $72\cdot30=2160$ checks for $c=6$.
+This is a safe overapproximation: the checker does \emph{not}
+require the corresponding $z,z'$ to be feasible grid coordinates.
+No floating-point arithmetic or random sampling is used.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Equation \eqref{eq:no59} excludes all outer multiset resolving sets of size
+at most three. The finite exhaustive computation and the explicit
+upper witnesses settle $2\le n\le8$. For $9\le n\le31$, the direct
+four-point certificate supplies an upper bound and \eqref{eq:no59} a
+matching lower bound. For $n\ge32$, every pair of distinct exterior
+vertices is either covered by Lemma~\ref{lem:prefix} or has both
+$z,z'\ge c$ and is covered by Lemma~\ref{lem:tail}.
+Thus \eqref{eq:landmarks} gives the upper bound four, which is sharp
+by \eqref{eq:no59}.
+\end{proof}
+
+\section{Reproducibility and limitations}
+The original exploration sources \texttt{verify\_finite.cpp} (C++17)
+and \texttt{verify\_infinite.py} (Python standard library), together with
+their two expected stdout records, are preserved byte for byte from
+v0.3 in the accompanying v1.0 reproducibility package. The first
+exhaustively enumerates the finite lower-bound cases, using exact integer
+power sums. The second checks finite instances and the two analytical
+collision reductions. The runner verifies the file inventory and SHA256
+digests, compiles in a temporary directory, and compares the outputs with
+the frozen records. Release preparation reproduced both outputs on Linux.
+
+The author's supplied reports record a scope-limited independent AI
+differential audit PASS through v0.3. The reported scope covers the model,
+finite and infinite claims, editorial changes, package integrity, and privacy.
+Earlier reports describe independent BFS checks for finite cases and a
+rederivation of the infinite collision reduction. The v0.3 reviewer's
+independent lower-bound tests were finite. The all-$n$ lower bound in this
+paper relies on No.~59. The raw reviewer materials are private.
+
+The author's supplied transcript records a Windows PowerShell 5.1
+reproduction PASS for the exact v0.3 package on 10 November 2026.
+It covers the inventory and SHA256 checks, the four frozen files, and
+both computational certificates. The reproducibility package includes a
+sanitized summary of that execution. The Windows result applies to v0.3.
+We checked the v1.0 release package on Linux.
+
+The literature search is incomplete and the novelty status is INCONCLUSIVE.
+Human peer review and full formal verification have not been performed.
+
+\begin{thebibliography}{9}\small
+\bibitem{KKY2023}
+S. Klav\v{z}ar, D. Kuziak, I. G. Yero,
+``Further Contributions on the Outer Multiset Dimension of Graphs,''
+\emph{Results in Mathematics} \textbf{78} (2023), Article 50.
+\url{https://doi.org/10.1007/s00025-022-01829-8}.
+\bibitem{FKKY2026}
+M. Farhan, S. Klav\v{z}ar, D. Kuziak, I. G. Yero,
+``Multiset resolvability parameters in graphs: A survey with new results
+and open problems,'' arXiv:2607.10311v1 (2026), Problem 10.
+\url{https://arxiv.org/abs/2607.10311}.
+\bibitem{Yonezu58}
+R. Yonezu, ``Exact Outer Multiset Dimension of the Three-Dimensional
+Grid Family $P_2\sq P_3\sq P_n$,'' author preprint No.~58, v1.0 (2026).
+\href{https://github.com/yonezaemon1-hub/no58-outer-multiset-dimension-3d-grid/releases/tag/v1.0}{GitHub release v1.0}.
+\bibitem{Yonezu59}
+R. Yonezu, ``Outer Multiset Dimension of Three-Dimensional Grids:
+A Universal Lower Bound and an Exact Two-Parameter Classification,''
+author preprint No.~59, v1.0 (2026), universal lower-bound theorem.
+\href{https://github.com/yonezaemon1-hub/no59-outer-multiset-dimension-3d-grid-classification/releases/tag/v1.0}{GitHub release v1.0}.
+\end{thebibliography}
+\end{document}
