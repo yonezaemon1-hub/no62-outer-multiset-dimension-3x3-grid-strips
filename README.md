@@ -72,3 +72,10 @@ the ZIP apply to its contents.
 - **Novelty:** INCONCLUSIVE. **Human peer review:** not performed.
   **Full formal verification:** not performed.
 - **Rights:** Copyright © 2026 Ryutaro Yonezu. All rights reserved.
+
+## Author correspondence (metadata update, 2026-11-12)
+
+**Ryutaro Yonezu — Independent Researcher**  
+Research correspondence: **yonezaemon1+research@gmail.com**
+
+This contact-information addition does not revise any mathematical claims, frozen verification files, published preprint PDF, release assets, DOI, or existing SHA256 checksums.
